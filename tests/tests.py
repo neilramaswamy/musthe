@@ -250,6 +250,7 @@ class TestsForChord(unittest.TestCase):
         test1('Cmaj7', 'C', 'M7')
         test1('D#aug7', 'D#', 'aug7')
         test1('Cbdim', 'Cb', 'dim')
+        test1('Bminmaj7', 'B', 'minmaj7')
 
     def test_chord_gen(self):
         roots = (Note('C'), Note('D'))

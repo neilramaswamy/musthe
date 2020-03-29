@@ -303,19 +303,17 @@ class Chord:
     """
 
     recipes = {
-        'maj':    ['P1', 'M3', 'P5'],
-        'min':    ['P1', 'm3', 'P5'],
-        'aug':    ['P1', 'M3', 'A5'],
-        'dim':    ['P1', 'm3', 'd5'],
-        'dom7':   ['P1', 'M3', 'P5', 'm7'],
-        'min7':   ['P1', 'm3', 'P5', 'm7'],
-        'maj7':   ['P1', 'M3', 'P5', 'M7'],
-        'aug7':   ['P1', 'M3', 'A5', 'm7'],
-        'dim7':   ['P1', 'm3', 'd5', 'd7'],
-        'm7dim5': ['P1', 'm3', 'd5', 'm7'],
-        'sus2':   ['P1', 'P5', 'P8', 'M2'],
-        'sus4':   ['P1', 'P5', 'P8', 'P4'],
-        'open5':  ['P1', 'P5', 'P8'],
+        'maj':     ['P1', 'M3', 'P5'],
+        'min':     ['P1', 'm3', 'P5'],
+        'aug':     ['P1', 'M3', 'A5'],
+        'dim':     ['P1', 'm3', 'd5'],
+        'dom7':    ['P1', 'M3', 'P5', 'm7'],
+        'min7':    ['P1', 'm3', 'P5', 'm7'],
+        'maj7':    ['P1', 'M3', 'P5', 'M7'],
+        'aug7':    ['P1', 'M3', 'A5', 'm7'],
+        'dim7':    ['P1', 'm3', 'd5', 'd7'],
+        'm7dim5':  ['P1', 'm3', 'd5', 'm7'],
+        'minmaj7': ['P1', 'm3', 'P5', 'M7'],
     }
     aliases = {
         'M':      'maj',
@@ -331,6 +329,7 @@ class Chord:
         '°7':     'm7dim5',
         'ø7':     'm7dim5',
         'm7b5':   'm7dim5',
+        'mM7':    'minmaj7',
     }
     valid_types = list(recipes.keys()) + list(aliases.keys())
 
