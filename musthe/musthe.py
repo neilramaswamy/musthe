@@ -50,7 +50,8 @@ class Letter:
         if isinstance(other, int):
             if other == 0:
                 raise ValueError('Invalid interval number: 0')
-            new_idx = (self.idx + other - (1 if other > 0 else -1)) % len(self.letters)
+            new_idx = (self.idx + other - (1 if other >
+                                           0 else -1)) % len(self.letters)
             return Letter(self.letters[new_idx])
         else:
             raise UnsupportedOperands('+', self, other)
@@ -315,6 +316,21 @@ class Chord:
         'm7dim5':  ['P1', 'm3', 'd5', 'm7'],
         'minmaj7': ['P1', 'm3', 'P5', 'M7'],
     }
+
+    names = {
+        'maj':     'major',
+        'min':     'minor',
+        'aug':     'augmented',
+        'dim':     'diminished',
+        'dom7':    'dominant 7',
+        'min7':    'minor 7',
+        'maj7':    'major 7',
+        'aug7':    'augmented 7',
+        'dim7':    'diminished 7',
+        'm7dim5':  'minor 7 flat 5',
+        'minmaj7': 'minor major 7',
+    }
+
     aliases = {
         'M':      'maj',
         'm':      'min',
@@ -346,6 +362,13 @@ class Chord:
         for root in roots:
             for name in Chord.recipes:
                 yield Chord(root, name)
+
+    @staticmethod
+    def readable_name(recipe):
+        if recipe in Chord.valid_types:
+            return Chord.names[recipe]
+        else:
+            raise ValueError('Invalid recipe name: {}.'.format(recipe))
 
     def __init__(self, root, chord_type='M'):
         if isinstance(root, str):

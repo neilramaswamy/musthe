@@ -24,7 +24,7 @@ class TestsForLetter(unittest.TestCase):
 
     def test_letter_arithmetic(self):
         def test1(letter, difference, result):
-            norm = lambda n: (n + (1 if n < 1 else -1)) % 7 + 1
+            def norm(n): return (n + (1 if n < 1 else -1)) % 7 + 1
             letter = Letter(letter)
             result = Letter(result)
             self.assertEqual(letter + difference, result)
@@ -72,11 +72,11 @@ class TestsForNote(unittest.TestCase):
         test2('E####')
 
     def test_note_gen(self):
-        self.assertEqual([n.scientific_notation() for n in Note.all(4,5)],
-            ['C4', 'C#4', 'Db4', 'D4', 'D#4', 'Eb4', 'E4', 'F4', 'F#4',
-                'Gb4', 'G4', 'G#4', 'Ab4', 'A4', 'A#4', 'Bb4', 'B4', 'C5',
-                'C#5', 'Db5', 'D5', 'D#5', 'Eb5', 'E5', 'F5', 'F#5', 'Gb5',
-                'G5', 'G#5', 'Ab5', 'A5', 'A#5', 'Bb5', 'B5'])
+        self.assertEqual([n.scientific_notation() for n in Note.all(4, 5)],
+                         ['C4', 'C#4', 'Db4', 'D4', 'D#4', 'Eb4', 'E4', 'F4', 'F#4',
+                          'Gb4', 'G4', 'G#4', 'Ab4', 'A4', 'A#4', 'Bb4', 'B4', 'C5',
+                          'C#5', 'Db5', 'D5', 'D#5', 'Eb5', 'E5', 'F5', 'F#5', 'Gb5',
+                          'G5', 'G#5', 'Ab5', 'A5', 'A#5', 'Bb5', 'B5'])
 
     def test_note_oct(self):
         def test1(n1, oc, n2):
@@ -210,7 +210,8 @@ class TestsForInterval(unittest.TestCase):
 
     def test_interval_split(self):
         def test1(i, *args):
-            self.assertEqual([str(i1) for i1 in Interval(i).split()], list(args))
+            self.assertEqual([str(i1)
+                              for i1 in Interval(i).split()], list(args))
         test1('M9', 'P8', 'M2')
         test1('m17', 'P8', 'P8', 'm3')
         test1('P29', 'P8', 'P8', 'P8', 'P8')
@@ -257,7 +258,7 @@ class TestsForChord(unittest.TestCase):
         list(Chord.all())
         list(Chord.all(root=tuple(roots)))
         list(Chord.all(root=list(roots)))
-        #list(Chord.all(root=set(roots))) # Note is not hashable
+        # list(Chord.all(root=set(roots))) # Note is not hashable
         list(Chord.all(root=roots[0]))
 
         self.assertRaises(TypeError, lambda: list(Chord.all(root='vdfjy#$')))
@@ -272,6 +273,22 @@ class TestsForChord(unittest.TestCase):
         test1('A', 'dim', ['P1', 'm3', 'd5'])
         test1('A', 'aug', ['P1', 'M3', 'A5'])
 
+        # Ensures that the keys of recipes and names are the same
+        def test_recipe_name_agreement():
+            recipe_keys = Chord.recipes.keys()
+            name_keys = Chord.names.keys()
+
+            okay = True
+            for rkey in recipe_keys:
+                if rkey not in name_keys:
+                    print("Recipe {} has no corresponding name".format(rkey))
+                    okay = False
+                    break
+
+            okay = okay and len(recipe_keys) == len(name_keys)
+            self.assertTrue(okay)
+        test_recipe_name_agreement()
+
     @unittest.skip('Note.__sub__ is broken')
     def test_recipes_intervals(self):
         for root in Note.all():
@@ -283,7 +300,8 @@ class TestsForChord(unittest.TestCase):
                 self.assertEqual(derivedRecipe, recipe)
 
     def test_chord_repr(self):
-        self.assertEqual(repr(Chord(Note('C'), 'dim7')), 'Chord({!r}, {!r})'.format(Note('C'), 'dim7'))
+        self.assertEqual(repr(Chord(Note('C'), 'dim7')),
+                         'Chord({!r}, {!r})'.format(Note('C'), 'dim7'))
 
     def test_chord_equality(self):
         self.assertNotEqual(Chord('Cdim'), Chord('Cdim7'))
@@ -292,18 +310,20 @@ class TestsForChord(unittest.TestCase):
 class TestsForScale(unittest.TestCase):
     def test_note_scales(self):
         def test1(root, name, notes):
-            self.assertEqual(list(map(str, Scale(Note(root), name).notes)), notes)
+            self.assertEqual(
+                list(map(str, Scale(Note(root), name).notes)), notes)
         test1('C', 'major',            ['C', 'D', 'E', 'F', 'G', 'A', 'B'])
-        test1('C', 'natural_minor',    ['C', 'D', 'Eb','F', 'G', 'Ab','Bb'])
-        test1('C', 'harmonic_minor',   ['C', 'D', 'Eb','F', 'G', 'Ab','B'])
-        test1('C', 'melodic_minor',    ['C', 'D', 'Eb','F', 'G', 'A', 'B'])
-        test1('C', 'dorian',           ['C', 'D', 'Eb','F', 'G', 'A', 'Bb'])
-        test1('C', 'locrian',          ['C', 'Db','Eb','F', 'Gb','Ab','Bb'])
-        test1('C', 'lydian',           ['C', 'D', 'E', 'F#','G', 'A', 'B'])
+        test1('C', 'natural_minor',    ['C', 'D', 'Eb', 'F', 'G', 'Ab', 'Bb'])
+        test1('C', 'harmonic_minor',   ['C', 'D', 'Eb', 'F', 'G', 'Ab', 'B'])
+        test1('C', 'melodic_minor',    ['C', 'D', 'Eb', 'F', 'G', 'A', 'B'])
+        test1('C', 'dorian',           ['C', 'D', 'Eb', 'F', 'G', 'A', 'Bb'])
+        test1('C', 'locrian',          [
+              'C', 'Db', 'Eb', 'F', 'Gb', 'Ab', 'Bb'])
+        test1('C', 'lydian',           ['C', 'D', 'E', 'F#', 'G', 'A', 'B'])
         test1('C', 'mixolydian',       ['C', 'D', 'E', 'F', 'G', 'A', 'Bb'])
-        test1('C', 'phrygian',         ['C', 'Db','Eb','F', 'G', 'Ab','Bb'])
+        test1('C', 'phrygian',         ['C', 'Db', 'Eb', 'F', 'G', 'Ab', 'Bb'])
         test1('C', 'major_pentatonic', ['C', 'D', 'E', 'G', 'A'])
-        test1('C', 'minor_pentatonic', ['C', 'Eb','F', 'G', 'Bb'])
+        test1('C', 'minor_pentatonic', ['C', 'Eb', 'F', 'G', 'Bb'])
 
     def test_scale_parsing(self):
         self.assertRaises(Exception, Scale, Note('C'), 'non-existent scale')
@@ -313,7 +333,8 @@ class TestsForScale(unittest.TestCase):
         s = Scale('C', 'harmonic_minor')
         self.assertRaises(IndexError, lambda: s[-1357788])
         self.assertRaises(TypeError, lambda: s[object()])
-        self.assertEqual(s[10:15], [Note(x) for x in ('F5', 'G5', 'Ab5', 'B5', 'C6')])
+        self.assertEqual(s[10:15], [Note(x)
+                                    for x in ('F5', 'G5', 'Ab5', 'B5', 'C6')])
 
     def test_create_all_scales(self):
         for scale in Scale.all():
@@ -349,7 +370,8 @@ class TestsForScale(unittest.TestCase):
     def test_scale_repr(self):
         scale = Scale('C', 'major')
         self.assertEqual(str(scale), 'C major')
-        self.assertEqual(repr(scale), 'Scale({!r}, {!r})'.format(scale.root, scale.name))
+        self.assertEqual(repr(scale), 'Scale({!r}, {!r})'.format(
+            scale.root, scale.name))
 
 
 if __name__ == '__main__':
